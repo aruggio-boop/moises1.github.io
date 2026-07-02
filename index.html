@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>De Mala e Cuia | Pesquisa de Passagens Aéreas</title>
+    <meta
+      name="description"
+      content="Ferramenta para pesquisar passagens aéreas com visual inspirado na jornada De Mala e Cuia."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="hero">
+        <div class="hero__copy">
+          <span class="eyebrow">De Mala e Cuia</span>
+          <h1>Pesquise passagens aéreas para a sua próxima aventura</h1>
+          <p class="hero__text">
+            Compare opções de voo, ajuste filtros e encontre rotas com melhor
+            custo-benefício para viajar com mais tranquilidade.
+          </p>
+          <div class="hero__actions">
+            <a
+              class="button button--ghost"
+              href="https://www.youtube.com/results?search_query=de+mala+e+cuia"
+              target="_blank"
+              rel="noreferrer"
+              >Visite nosso canal</a
+            >
+            <div class="hero__stats">
+              <div>
+                <strong>+120</strong>
+                <span>rotas simuladas</span>
+              </div>
+              <div>
+                <strong>24h</strong>
+                <span>formato visual fácil</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero__image-card">
+          <img
+            src="@de_mala_e_cuia_oficial.png(1).png"
+            alt="Família preparando a mudança para a Itália"
+          />
+        </div>
+      </header>
+
+      <main class="content">
+        <section class="search-panel">
+          <div class="section-heading">
+            <span class="section-heading__tag">Busca inteligente</span>
+            <h2>Monte sua viagem</h2>
+            <p>
+              Escolha origem, destino, datas e preferências para receber
+              sugestões de passagens.
+            </p>
+          </div>
+
+          <form id="flight-search-form" class="search-form" novalidate>
+            <div class="trip-type" role="radiogroup" aria-label="Tipo de viagem">
+              <label class="trip-type__option">
+                <input type="radio" name="tripType" value="roundtrip" checked />
+                <span>Ida e volta</span>
+              </label>
+              <label class="trip-type__option">
+                <input type="radio" name="tripType" value="oneway" />
+                <span>Somente ida</span>
+              </label>
+            </div>
+
+            <div class="form-grid">
+              <label class="field">
+                <span>Origem</span>
+                <input
+                  type="text"
+                  id="origin"
+                  name="origin"
+                  list="airport-options"
+                  placeholder="Ex.: São Paulo (GRU)"
+                  required
+                />
+              </label>
+
+              <label class="field">
+                <span>Destino</span>
+                <input
+                  type="text"
+                  id="destination"
+                  name="destination"
+                  list="airport-options"
+                  placeholder="Ex.: Roma (FCO)"
+                  required
+                />
+              </label>
+
+              <label class="field">
+                <span>Data de ida</span>
+                <input type="date" id="departureDate" name="departureDate" required />
+              </label>
+
+              <label class="field">
+                <span>Data de volta</span>
+                <input type="date" id="returnDate" name="returnDate" required />
+              </label>
+
+              <label class="field">
+                <span>Passageiros</span>
+                <input
+                  type="number"
+                  id="passengers"
+                  name="passengers"
+                  min="1"
+                  max="9"
+                  value="1"
+                  required
+                />
+              </label>
+
+              <label class="field">
+                <span>Classe</span>
+                <select id="cabinClass" name="cabinClass">
+                  <option value="economy">Econômica</option>
+                  <option value="premium">Premium Economy</option>
+                  <option value="business">Executiva</option>
+                </select>
+              </label>
+
+              <label class="field field--wide">
+                <span>Orçamento máximo por passageiro</span>
+                <input
+                  type="range"
+                  id="budget"
+                  name="budget"
+                  min="1500"
+                  max="15000"
+                  step="250"
+                  value="6500"
+                />
+                <small id="budget-value">Até R$ 6.500</small>
+              </label>
+
+              <label class="field field--checkbox">
+                <input type="checkbox" id="directOnly" name="directOnly" />
+                <span>Mostrar apenas voos diretos</span>
+              </label>
+            </div>
+
+            <div class="search-form__footer">
+              <p class="helper-text">
+                Dica: use aeroportos brasileiros e europeus para simular rotas
+                da jornada De Mala e Cuia.
+              </p>
+              <button type="submit" class="button button--primary">
+                Pesquisar passagens
+              </button>
+            </div>
+
+            <p id="form-message" class="form-message" role="status" aria-live="polite"></p>
+            <datalist id="airport-options"></datalist>
+          </form>
+        </section>
+
+        <section class="results-panel">
+          <div class="results-panel__header">
+            <div>
+              <span class="section-heading__tag">Resultados</span>
+              <h2>Melhores opções para sua busca</h2>
+              <p id="results-summary">
+                Preencha o formulário para visualizar as passagens disponíveis.
+              </p>
+            </div>
+
+            <div class="results-toolbar" id="results-toolbar" hidden>
+              <label class="field field--toolbar">
+                <span>Ordenar por</span>
+                <select id="sortResults" name="sortResults">
+                  <option value="price">Menor preço</option>
+                  <option value="duration">Menor duração</option>
+                  <option value="departure">Horário de saída</option>
+                </select>
+              </label>
+            </div>
+          </div>
+
+          <div id="results-list" class="results-list" aria-live="polite">
+            <article class="empty-state">
+              <h3>Pronto para decolar?</h3>
+              <p>
+                Sua busca exibirá voos com companhia aérea, escalas, duração e
+                preço estimado.
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section class="recent-searches" id="recent-searches-section" hidden>
+          <div class="section-heading">
+            <span class="section-heading__tag">Atalhos</span>
+            <h2>Buscas recentes</h2>
+            <p>Reaplique uma pesquisa com apenas um clique.</p>
+          </div>
+
+          <div id="recent-searches-list" class="recent-searches__list"></div>
+        </section>
+      </main>
+    </div>
+
+    <script src="js/app.js"></script>
+  </body>
+</html>
