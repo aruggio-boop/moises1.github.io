@@ -8,12 +8,16 @@ com visual inspirado na jornada "De Mala e Cuia".
 - landing page com identidade visual escura;
 - formulário de busca com:
   - origem e destino;
+  - atalho de rotas populares;
+  - inversão rápida de origem e destino;
   - ida e volta ou somente ida;
   - datas;
   - passageiros;
   - classe;
   - orçamento máximo;
   - filtro para voos diretos;
+- estado visual de busca em andamento;
+- painel de insights com menor tarifa, tempo médio e leitura do orçamento;
 - resultados com ordenação por preço, duração e horário;
 - histórico local de buscas recentes.
 

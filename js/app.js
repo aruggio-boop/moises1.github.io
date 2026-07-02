@@ -33,6 +33,7 @@ const recentSearchesStorageKey = "de-mala-e-cuia-flight-searches";
 const resultsState = {
   query: null,
   flights: [],
+  meta: null,
 };
 
 const form = document.querySelector("#flight-search-form");
@@ -50,6 +51,16 @@ const resultsToolbar = document.querySelector("#results-toolbar");
 const sortResults = document.querySelector("#sortResults");
 const recentSearchesSection = document.querySelector("#recent-searches-section");
 const recentSearchesList = document.querySelector("#recent-searches-list");
+const popularRoutes = document.querySelector("#popular-routes");
+const swapRouteButton = document.querySelector("#swap-route");
+const searchButton = document.querySelector("#search-button");
+const insightPanel = document.querySelector("#results-insights");
+const insightCheapest = document.querySelector("#insight-cheapest");
+const insightCheapestCopy = document.querySelector("#insight-cheapest-copy");
+const insightDuration = document.querySelector("#insight-duration");
+const insightDurationCopy = document.querySelector("#insight-duration-copy");
+const insightBudget = document.querySelector("#insight-budget");
+const insightBudgetCopy = document.querySelector("#insight-budget-copy");
 
 populateAirports();
 setDefaultDates();
@@ -67,7 +78,25 @@ sortResults.addEventListener("change", () => renderResults(resultsState.query, [
   radio.addEventListener("change", toggleReturnDateField);
 });
 
-form.addEventListener("submit", (event) => {
+popularRoutes.addEventListener("click", (event) => {
+  const trigger = event.target.closest("[data-origin][data-destination]");
+
+  if (!trigger) {
+    return;
+  }
+
+  originInput.value = trigger.dataset.origin;
+  destinationInput.value = trigger.dataset.destination;
+  form.requestSubmit();
+});
+
+swapRouteButton.addEventListener("click", () => {
+  const nextOrigin = destinationInput.value;
+  destinationInput.value = originInput.value;
+  originInput.value = nextOrigin;
+});
+
+form.addEventListener("submit", async (event) => {
   event.preventDefault();
   formMessage.textContent = "";
 
@@ -79,13 +108,22 @@ form.addEventListener("submit", (event) => {
     return;
   }
 
-  const flights = searchFlights(query);
-  resultsState.query = query;
-  resultsState.flights = flights;
+  setLoadingState(true);
 
-  saveRecentSearch(query);
-  renderRecentSearches();
-  renderResults(query, flights);
+  try {
+    await wait(650);
+
+    const result = searchFlights(query);
+    resultsState.query = query;
+    resultsState.flights = result.flights;
+    resultsState.meta = result.meta;
+
+    saveRecentSearch(query);
+    renderRecentSearches();
+    renderResults(query, result.flights);
+  } finally {
+    setLoadingState(false);
+  }
 });
 
 recentSearchesList.addEventListener("click", (event) => {
@@ -244,12 +282,22 @@ function searchFlights(query) {
     .filter((flight) => flight.price <= query.budget)
     .sort((flightA, flightB) => flightA.price - flightB.price);
 
-  return filtered.slice(0, 6);
+  return {
+    flights: filtered.slice(0, 6),
+    meta: {
+      marketMinPrice: candidates.reduce((minimum, flight) => Math.min(minimum, flight.price), Number.POSITIVE_INFINITY),
+      marketAvgDuration: Math.round(
+        candidates.reduce((total, flight) => total + flight.durationMinutes, 0) / candidates.length
+      ),
+      totalCandidates: candidates.length,
+    },
+  };
 }
 
 function renderResults(query, flights) {
   if (!query) {
     resultsToolbar.hidden = true;
+    insightPanel.hidden = true;
     return;
   }
 
@@ -269,6 +317,8 @@ function renderResults(query, flights) {
     query.tripType === "roundtrip"
       ? `${baseSummary} entre ${formattedDeparture} e ${formatDateLong(query.returnDate)}.`
       : `${baseSummary} com embarque em ${formattedDeparture}.`;
+
+  renderInsights(query, sortedFlights, resultsState.meta);
 
   if (!sortedFlights.length) {
     resultsList.innerHTML = `
@@ -550,6 +600,42 @@ function timeToMinutes(time) {
   return hours * 60 + minutes;
 }
 
+function renderInsights(query, flights, meta) {
+  insightPanel.hidden = false;
+
+  if (!meta) {
+    insightPanel.hidden = true;
+    return;
+  }
+
+  const cheapestFlight = flights[0] || null;
+  const deltaToBudget = query.budget - meta.marketMinPrice;
+
+  insightCheapest.textContent = cheapestFlight ? formatCurrency(cheapestFlight.price) : formatCurrency(meta.marketMinPrice);
+  insightCheapestCopy.textContent = cheapestFlight
+    ? `${cheapestFlight.airline} aparece como a melhor tarifa dentro dos filtros atuais.`
+    : `A melhor tarifa geral estimada está acima do seu teto atual.`;
+
+  insightDuration.textContent = formatDuration(
+    flights.length
+      ? Math.round(flights.reduce((total, flight) => total + flight.durationMinutes, 0) / flights.length)
+      : meta.marketAvgDuration
+  );
+  insightDurationCopy.textContent = flights.length
+    ? `Baseado nas ${flights.length} melhores opções filtradas para essa rota.`
+    : `Tempo médio estimado considerando ${meta.totalCandidates} combinações simuladas.`;
+
+  if (deltaToBudget >= 0) {
+    insightBudget.textContent = `${formatCurrency(deltaToBudget)} de folga`;
+    insightBudgetCopy.textContent = `Seu teto está competitivo e cobre a menor tarifa estimada para essa busca.`;
+  } else {
+    insightBudget.textContent = `${formatCurrency(Math.abs(deltaToBudget))} abaixo`;
+    insightBudgetCopy.textContent = `Aumente o orçamento em pelo menos ${formatCurrency(
+      Math.abs(deltaToBudget)
+    )} para alcançar a menor tarifa prevista.`;
+  }
+}
+
 function syncDateBoundaries() {
   if (!departureDateInput.value) {
     return;
@@ -560,4 +646,18 @@ function syncDateBoundaries() {
   if (returnDateInput.value && returnDateInput.value <= departureDateInput.value) {
     returnDateInput.value = formatDateForInput(addDays(new Date(`${departureDateInput.value}T00:00:00`), 10));
   }
+}
+
+function setLoadingState(isLoading) {
+  searchButton.disabled = isLoading;
+  searchButton.classList.toggle("button--loading", isLoading);
+  searchButton.querySelector(".button__label").textContent = isLoading
+    ? "Buscando melhores opções"
+    : "Pesquisar passagens";
+}
+
+function wait(durationMs) {
+  return new Promise((resolve) => {
+    window.setTimeout(resolve, durationMs);
+  });
 }

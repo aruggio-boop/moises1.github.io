@@ -66,6 +66,44 @@
             </p>
           </div>
 
+          <div class="route-shortcuts">
+            <span class="route-shortcuts__label">Rotas populares</span>
+            <div id="popular-routes" class="route-shortcuts__list">
+              <button
+                type="button"
+                class="route-shortcuts__item"
+                data-origin="Belo Horizonte (CNF)"
+                data-destination="Roma (FCO)"
+              >
+                Belo Horizonte → Roma
+              </button>
+              <button
+                type="button"
+                class="route-shortcuts__item"
+                data-origin="São Paulo (GRU)"
+                data-destination="Milão (MXP)"
+              >
+                São Paulo → Milão
+              </button>
+              <button
+                type="button"
+                class="route-shortcuts__item"
+                data-origin="Rio de Janeiro (GIG)"
+                data-destination="Lisboa (LIS)"
+              >
+                Rio de Janeiro → Lisboa
+              </button>
+              <button
+                type="button"
+                class="route-shortcuts__item"
+                data-origin="Campinas (VCP)"
+                data-destination="Porto (OPO)"
+              >
+                Campinas → Porto
+              </button>
+            </div>
+          </div>
+
           <form id="flight-search-form" class="search-form" novalidate>
             <div class="trip-type" role="radiogroup" aria-label="Tipo de viagem">
               <label class="trip-type__option">
@@ -102,6 +140,12 @@
                   required
                 />
               </label>
+
+              <div class="field field--inline-action">
+                <button type="button" id="swap-route" class="button button--ghost button--small">
+                  Inverter rota
+                </button>
+              </div>
 
               <label class="field">
                 <span>Data de ida</span>
@@ -160,8 +204,8 @@
                 Dica: use aeroportos brasileiros e europeus para simular rotas
                 da jornada De Mala e Cuia.
               </p>
-              <button type="submit" class="button button--primary">
-                Pesquisar passagens
+              <button type="submit" class="button button--primary" id="search-button">
+                <span class="button__label">Pesquisar passagens</span>
               </button>
             </div>
 
@@ -190,6 +234,24 @@
                 </select>
               </label>
             </div>
+          </div>
+
+          <div id="results-insights" class="results-insights" hidden>
+            <article class="insight-card">
+              <span class="insight-card__label">Menor tarifa</span>
+              <strong id="insight-cheapest">-</strong>
+              <p id="insight-cheapest-copy">Aparece após a primeira busca.</p>
+            </article>
+            <article class="insight-card">
+              <span class="insight-card__label">Tempo médio</span>
+              <strong id="insight-duration">-</strong>
+              <p id="insight-duration-copy">Compare conforto e tempo total.</p>
+            </article>
+            <article class="insight-card">
+              <span class="insight-card__label">Leitura do orçamento</span>
+              <strong id="insight-budget">-</strong>
+              <p id="insight-budget-copy">Veja se o teto está competitivo.</p>
+            </article>
           </div>
 
           <div id="results-list" class="results-list" aria-live="polite">
