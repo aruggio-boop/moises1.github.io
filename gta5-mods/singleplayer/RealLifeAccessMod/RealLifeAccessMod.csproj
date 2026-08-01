@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <AssemblyName>RealLifeAccessMod</AssemblyName>
+    <RootNamespace>RealLifeAccessMod</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <OutputPath>bin\</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!--
+      Ajuste HintPath para a pasta do seu GTA V.
+      Exemplo: C:\Program Files\Rockstar Games\Grand Theft Auto V\ScriptHookVDotNet3.dll
+    -->
+    <Reference Include="ScriptHookVDotNet3">
+      <HintPath>$(GTA_V_DIR)\ScriptHookVDotNet3.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CDataFileMgr__ContentsOfDataFileXml>
+  <disabledFiles />
+  <includedXmlFiles />
+  <includedDataFiles />
+  <dataFiles>
+    <Item>
+      <filename>dlc_realife:/common/data/levels/gta5/vehicles.meta</filename>
+      <fileType>VEHICLE_METADATA_FILE</fileType>
+      <overlay value="false" />
+      <disabled value="true" />
+      <persistent value="false" />
+    </Item>
+    <Item>
+      <filename>dlc_realife:/common/data/carvariations.meta</filename>
+      <fileType>VEHICLE_VARIATION_FILE</fileType>
+      <overlay value="false" />
+      <disabled value="true" />
+      <persistent value="false" />
+    </Item>
+    <Item>
+      <filename>dlc_realife:/common/data/handling.meta</filename>
+      <fileType>HANDLING_FILE</fileType>
+      <overlay value="false" />
+      <disabled value="true" />
+      <persistent value="false" />
+    </Item>
+  </dataFiles>
+  <contentChangeSets>
+    <Item>
+      <changeSetName>CCS_REALIFE_VEHICLES</changeSetName>
+      <filesToEnable>
+        <Item>dlc_realife:/common/data/levels/gta5/vehicles.meta</Item>
+        <Item>dlc_realife:/common/data/carvariations.meta</Item>
+        <Item>dlc_realife:/common/data/handling.meta</Item>
+      </filesToEnable>
+      <executionConditions>
+        <activeChangesetConditions>
+        </activeChangesetConditions>
+        <genericConditions>$level=MO_JIM_L11</genericConditions>
+      </executionConditions>
+      <filesToDisable />
+      <filesToInvalidate />
+      <filesToInvalidate2 />
+      <filesToDisable />
+      <filesToEnable />
+      <fileSetsToInvalidate />
+      <fileSetsToDisable />
+      <fileSetsToEnable />
+      <mapChangeSetData />
+    </Item>
+  </contentChangeSets>
+  <patchFiles />
+</CDataFileMgr__ContentsOfDataFileXml>
